@@ -9,14 +9,8 @@ from states.user_edit_state import Personal_edit
 from aiogram.dispatcher import FSMContext
 from twilio.rest import Client
 from random import randint
+from data.config import auth_token, account_sid
 
-
-
-# Find your Account SID and Auth Token at twilio.com/console
-# and set the environment variables. See http://twil.io/secure
-account_sid = 'AC358cbabe5036f4efb73aa7933864e1a4'
-auth_token = '06b1c6f8c58b78f38e69b08bb362c997'
-client = Client(account_sid, auth_token)
 
 
 PHONE_NUM = r'^[\+][0-9]{3}[0-9]{3}[0-9]{6}$'
