@@ -7,9 +7,10 @@ from aiogram.dispatcher.filters import Text, Regexp
 from keyboards.default import edit_settings_menu_eng, menuStart, edit_settings_menu_uz, back_menu_uz, back_menu_eng, menu_product_types_uz, menu_product_types_eng
 from states.user_edit_state import Personal_edit
 from aiogram.dispatcher import FSMContext
-from twilio.rest import Client
 from random import randint
-from data.config import auth_token, account_sid
+from utils.send_sms import send_sms
+
+
 
 
 
@@ -110,12 +111,14 @@ async def edit_handler(message: types.Message, state : FSMContext):
     lang = "uz" if customer.language == "🇺🇿O'zbekcha" else "eng"
     send_text = text[lang] # sms uchun text
     print(sms_text)
-    sms = client.messages \
-                    .create(
-                         body=sms_text[lang],
-                         from_='+1 989 310 7966',
-                         to=phone
-        )
+    sms = send_sms(sms_text[lang], phone)
+    
+    # sms = client.messages \
+    #                 .create(
+    #                      body=sms_text[lang],
+    #                      from_='+1 989 310 7966',
+    #                      to=phone
+    #     )
     keyboard = back_menu_uz if lang == "uz" else back_menu_eng
     await message.answer(text[lang], reply_markup=keyboard)
     await Personal_edit.phone.set()

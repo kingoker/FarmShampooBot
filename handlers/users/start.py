@@ -7,13 +7,7 @@ from states.user_state import Personal
 from random import randint
 from aiogram.dispatcher.filters import Regexp
 from database.database import session, Customer, Product, Organization, savat
-from twilio.rest import Client
-from data.config import auth_token, account_sid
-
-
-# Find your Account SID and Auth Token at twilio.com/console
-# and set the environment variables. See http://twil.io/secure
-client = Client(account_sid, auth_token)
+from utils.send_sms import send_sms
 
 PHONE_NUM = r'^[\+][0-9]{3}[0-9]{3}[0-9]{6}$'
 
@@ -92,12 +86,13 @@ async def phone_input_text(message : types.Message, state : FSMContext):
     send_text = text[lang] # sms uchun text
     print(sms_text[lang])
     phone_number = contact
-    sms = client.messages \
-                    .create(
-                         body=sms_text[lang],
-                         from_='+1 989 310 7966',
-                         to=f"+{phone_number}"
-                     )
+    sms = send_sms(sms_text[lang], phone_number)
+    # sms = client.messages \
+    #                 .create(
+    #                      body=sms_text[lang],
+    #                      from_='+1 989 310 7966',
+    #                      to=f"+{phone_number}"
+    #                  )
     telefon_text = {
         "uz" : ["Telefon raqamni o'zgartirish", "Kodni qayta jo'natish"],
         "eng" : ["Сменить номер телефона", "Отправить код еще раз"],
@@ -132,12 +127,14 @@ async def phone_input(message : types.Message, state : FSMContext):
     send_text = text[lang] # sms uchun text
     print(sms_text[lang])
     phone_number = contact
-    sms = client.messages \
-                    .create(
-                         body=sms_text[lang],
-                         from_='+1 989 310 7966',
-                         to=f"+{phone_number}"
-                     )
+    sms = send_sms(sms_text[lang], phone_number)
+    
+    # sms = client.messages \
+    #                 .create(
+    #                      body=sms_text[lang],
+    #                      from_='+1 989 310 7966',
+    #                      to=f"+{phone_number}"
+    #                  )
     telefon_text = {
         "uz" : ["Telefon raqamni o'zgartirish", "Kodni qayta jo'natish"],
         "eng" : ["Сменить номер телефона", "Отправить код еще раз"],
@@ -175,12 +172,14 @@ async def resend_code(message : types.Message, state : FSMContext):
         })
     sms_text = f"Sizning aktivatsiya kodingiz : {code}"
     print(sms_text)
-    sms = client.messages \
-                    .create(
-                         body=sms_text,
-                         from_='+1 989 310 7966',
-                         to=f"+{phone_number}"
-                     )
+    sms = send_sms(sms_text[lang], phone_number)
+    
+    # sms = client.messages \
+    #                 .create(
+    #                      body=sms_text,
+    #                      from_='+1 989 310 7966',
+    #                      to=f"+{phone_number}"
+    #                  )
     telefon_text = ["Telefon raqamni o'zgartirish", "Kodni qayta jo'natish"]                    
     keyboard = types.ReplyKeyboardMarkup(keyboard=[[types.KeyboardButton(telefon_text[0])],[types.KeyboardButton(telefon_text[1])]], resize_keyboard=True)                                            
     await message.answer(text, reply_markup=keyboard)                    
@@ -196,12 +195,14 @@ async def resend_code(message : types.Message, state : FSMContext):
         })
     sms_text = f"Ваш код активации: {code}."
     print(sms_text)
-    sms = client.messages \
-                    .create(
-                         body=sms_text,
-                         from_='+1 989 310 7966',
-                         to=f"+{phone_number}"
-                     )
+    sms = send_sms(sms_text[lang], phone_number)
+    
+    # sms = client.messages \
+    #                 .create(
+    #                      body=sms_text,
+    #                      from_='+1 989 310 7966',
+    #                      to=f"+{phone_number}"
+    #                  )
     telefon_text = ["Сменить номер телефона", "Отправить код еще раз"]                    
     keyboard = types.ReplyKeyboardMarkup(keyboard=[[types.KeyboardButton(telefon_text[0])],[types.KeyboardButton(telefon_text[1])]], resize_keyboard=True)                                            
     await message.answer(text, reply_markup=keyboard)                    
