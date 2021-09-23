@@ -76,7 +76,7 @@ async def edit_name_handler(message: types.Message, state : FSMContext):
 @dp.message_handler(Text(equals="Изменить номер", ignore_case=True))
 async def edit_phone_handler(message: types.Message):
     await message.answer("📱 Отправьте ваш номер телефона.\nОтправьте номер телефона для звонков в формате:\n+ 998 ** *** ****", reply_markup=back_menu_eng)
-    await Personal_edit.code.set()
+    await Personal_edit.phone.set()
 
 
 @dp.message_handler(Text(equals="Raqamni o'zgartirish", ignore_case=True))

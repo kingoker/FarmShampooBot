@@ -13,7 +13,7 @@ def send_sms(sms_text, phone_number):
   'from': '4546',
   }
   files=[]
-
+  print(phone_number)
   headers = {
     'Authorization': f'Bearer {ESKIZ_TOKEN}'
   }

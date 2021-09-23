@@ -1,147 +1,97 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, create_engine, asc, desc, func, and_
-from sqlalchemy.orm import relationship, backref, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.sql import select
-
-Base = declarative_base()
-
+from aiogram import Bot
+from aiogram import types
+from aiogram.dispatcher import Dispatcher
+from aiogram.types.message import ContentTypes
+from aiogram.utils import executor
 
 
-savat = Table(
-    "savat",
-    Base.metadata,
-    Column("customer_id", Integer, ForeignKey("customer.customer_id")),
-    Column("product_id", Integer, ForeignKey("product.product_id")),
-    Column("amount", Integer),
-)
+BOT_TOKEN = '1926333455:AAFF9fhatJWs1ELyKY6m-jqsoK7DxMNYQ0o'
+PAYMENTS_PROVIDER_TOKEN = '371317599:TEST:1632159259339'
+
+bot = Bot(BOT_TOKEN)
+dp = Dispatcher(bot)
+
+# Setup prices
+prices = [
+    types.LabeledPrice(label='Working Time Machine', amount=57500000),
+    types.LabeledPrice(label='Gift wrapping', amount=5000000),
+]
+
+# Setup shipping options
+shipping_options = [
+    types.ShippingOption(id='instant', title='WorldWide Teleporter').add(types.LabeledPrice('Teleporter', 1000)),
+    types.ShippingOption(id='pickup', title='Local pickup').add(types.LabeledPrice('Pickup', 300)),
+]
 
 
-class Customer(Base):
-    __tablename__ = "customer"
-    customer_id = Column(Integer, primary_key=True)
-    username = Column(String)
-    phone = Column(String)
-    language = Column(String(250))
-    products = relationship(
-        "Product", secondary=savat, back_populates="customers"
-    )
-    time = Column(String, nullable=True)
-    comment = Column(String, nullable=True)
-    latitude = Column(String, nullable=True)
-    longitude = Column(String, nullable=True)
-    def __repr__(self):
-        return f"{self.username}"
-
-class Product(Base):
-    __tablename__ = "product"
-    product_id = Column(Integer, primary_key=True)
-    title = Column(String(250))
-    description = Column(String(250))
-    photo_id = Column(String(250)) 
-    price = Column(String(250))
-    customers = relationship(
-        "Customer", secondary=savat, back_populates="products"
-    )
-    
-    def __repr__(self):
-        return self.title
+@dp.message_handler(commands=['start'])
+async def cmd_start(message: types.Message):
+    await bot.send_message(message.chat.id,
+                           "Hello, I'm the demo merchant bot."
+                           " I can sell you a Time Machine."
+                           " Use /buy to order one, /terms for Terms and Conditions")
 
 
-class Organization(Base):
-    __tablename__ = 'organization'
-    title = Column(String(80), nullable=False)
-    id = Column(Integer, primary_key=True)
-    description = Column(String(250))
-    # address = Column(String(250)) 
-    phone_number = Column(String(250)) 
+@dp.message_handler(commands=['terms'])
+async def cmd_terms(message: types.Message):
+    await bot.send_message(message.chat.id,
+                           'Thank you for shopping with our demo bot. We hope you like your new time machine!\n'
+                           '1. If your time machine was not delivered on time, please rethink your concept of time'
+                           ' and try again.\n'
+                           '2. If you find that your time machine is not working, kindly contact our future service'
+                           ' workshops on Trappist-1e. They will be accessible anywhere between'
+                           ' May 2075 and November 4000 C.E.\n'
+                           '3. If you would like a refund, kindly apply for one yesterday and we will have sent it'
+                           ' to you immediately.')
 
 
-
-engine = create_engine('postgresql://newmac:sindarov03@localhost:5432/asadbek')
-
-
-Base.metadata.create_all(engine)
-
-Session = sessionmaker(bind=engine)
-
-# create a Session
-session = Session()
-
-
-customer = Customer(username="Murodbek", phone="+998727440", language="🇺🇿O'zbekcha", time="12:00 21.09.2021 da", comment="Bu shunchaki test", longitude="1212", latitude="2115")
-session.add(customer)
-session.commit()
-# product = Product(title="Product title3", description="Product description3", price="322000", photo_id="photo_id3")
-# customer = session.query(Customer).filter(Customer.customer_id == 1914622728).first() # Customer(customer_id=759631, username="Murodbek", phone="+998938727265", language="🇺🇿O'zbekcha",) #    
-# customer.username = "Asadbek"
-
-# product =session.query(Product).filter(Product.title == "Контрактубекс® 20 г гель для лечения рубцов и шрамов").first()   # Product(title="Контрактубекс® 20 г", description="эффект. ....", price="100000",photo_id="some photo_id again") 
-# print(product.description)
-# session.delete(product)
-# session.commit()
-# customer.products.remove(product)
-# session.commit()
-# print(product in customer.products)
-# amount = int(input())
-
-# if product in customer.products:
-#     customer.products.remove(product)
-#     session.commit()
-# customer_savat = savat.insert().values(customer_id=customer.customer_id, product_id=product.product_id, amount=amount)
+@dp.message_handler(commands=['buy'])
+async def cmd_buy(message: types.Message):
+    await bot.send_message(message.chat.id,
+                           "Real cards won't work with me, no money will be debited from your account."
+                           " Use this test card number to pay for your Time Machine: `4242 4242 4242 4242`"
+                           "\n\nThis is your demo invoice:", parse_mode='Markdown')
+    await bot.send_invoice(message.chat.id, title='Working Time Machine',
+                           description='Want to visit your great-great-great-grandparents?'
+                                       ' Make a fortune at the races?'
+                                       ' Shake hands with Hammurabi and take a stroll in the Hanging Gardens?'
+                                       ' Order our Working Time Machine today!',
+                           provider_token=PAYMENTS_PROVIDER_TOKEN,
+                           currency='uzs',
+                           photo_url='https://telegra.ph/file/d08ff863531f10bf2ea4b.jpg',
+                           photo_height=512,  # !=0/None or picture won't be shown
+                           photo_width=512,
+                           photo_size=512,
+                           is_flexible=True,  # True If you need to set up Shipping Fee
+                           prices=prices,
+                           start_parameter='time-machine-example',
+                           payload='HAPPY FRIDAYS COUPON')
 
 
+@dp.shipping_query_handler(lambda query: True)
+async def shipping(shipping_query: types.ShippingQuery):
+    await bot.answer_shipping_query(shipping_query.id, ok=True, shipping_options=shipping_options,
+                                    error_message='Oh, seems like our Dog couriers are having a lunch right now.'
+                                                  ' Try again later!')
 
-# customer.products.remove(product)
-# session.commit()
-# session.execute(customer_savat)
-# customer.products.clear()
-# session.commit()
-# products = [(p.title, p.description) for p in customer.products]
-# print(customer.products)
-# for t in products:
-#         print(t)    
 
-# customer_savat = savat.insert().values(customer_id=customer.customer_id, product_id=product.product_id, amount=6)
-# customer.products.remove(product)
-# customer.products.remove(product)
-# customer.products.remove(product)
-# savat_del = savat.delete().where(savat.c.customer_id==759631, savat.c.product_id==product.product_id)
-# session.delete(product)
-# session.execute(customer_savat)
-# session.commit()
-# l = savat.filter(savat.c.customer_id==759631, savat.c.product_id==product.product_id)
-# print(l)
-# products = customer.savat
-# products.remove(product)
-# savat = savat.delete().where(savat.c.customer_id==customer.customer_id, savat.c.product_id==product.product_id)
-# savat = savat.insert().values(customer_id=customer.customer_id,product_id=product.product_id, amount=5)
-# print(customer.products)
-# print(product)
-# s = select([savat, Customer]).filter(savat.c.customer_id == customer.customer_id)
-# results = session.execute(s)
-# total_price = 0
-# r = session.query(savat, Customer).filter(Customer.customer_id==customer.customer_id, savat.c.customer_id == customer.customer_id).all()
-# for row in r:
-#     print(row.amount)
-#     print(row.product_id)
-#     product = session.query(Product).filter(Product.product_id==row.product_id).first()
-#     print(f"{row.Customer.username} {product.title}ni {row.amount} ta sotib oldi. ")
-#     print(f"{row.amount} x {product.price} = {int(row.amount)*int(product.price)}")
-#     total_price += int(row.amount)*int(product.price)
-# print("Total price : %s" %total_price)    
-# print(results.first())
-# for row in results:
-    # print(f"{row.amount} x {row.Product.price} = {int(row.amount) * int(row.Product.price)}")
-    # total_price += int(row.amount) * int(row.Product.price)
-    # print(row)
-# print(f"Total price : {total_price}")    
-    # print(row.customer_id)
-    # print(row.product_id)
-    # print(row.amount)
-    # print(row.Customer)
-    
-# print(products)
-# print(savat)
-# session.add(customer)
-# session.execute(savat)
-# session.commit()
+@dp.pre_checkout_query_handler(lambda query: True)
+async def checkout(pre_checkout_query: types.PreCheckoutQuery):
+    await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True,
+                                        error_message="Aliens tried to steal your card's CVV,"
+                                                      " but we successfully protected your credentials,"
+                                                      " try to pay again in a few minutes, we need a small rest.")
+
+
+@dp.message_handler(content_types=ContentTypes.SUCCESSFUL_PAYMENT)
+async def got_payment(message: types.Message):
+    await bot.send_message(message.chat.id,
+                           'Hoooooray! Thanks for payment! We will proceed your order for `{} {}`'
+                           ' as fast as possible! Stay in touch.'
+                           '\n\nUse /buy again to get a Time Machine for your friend!'.format(
+                               message.successful_payment.total_amount / 100, message.successful_payment.currency),
+                           parse_mode='Markdown')
+
+
+if __name__ == '__main__':
+    executor.start_polling(dp, skip_updates=True)

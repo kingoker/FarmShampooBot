@@ -100,10 +100,18 @@ async def phone_input_text(message : types.Message, state : FSMContext):
     keyboard = types.ReplyKeyboardMarkup(keyboard=[[types.KeyboardButton(telefon_text[lang][0])],[types.KeyboardButton(telefon_text[lang][1])]], resize_keyboard=True)                        
     await message.answer(send_text, reply_markup=keyboard)
     await Personal.next()
+    """ O'zgartirish uchun  """
+    text = {
+        "uz" : "Ismingizni kiriting:",
+        "eng" : "Введите ваше имя:"
+    }
+    await message.answer(text[lang])
+    await Personal.name.set()
 
 
 @dp.message_handler(state=Personal.phone,content_types=["contact"])
 async def phone_input(message : types.Message, state : FSMContext):
+    print("Contact yuborildi")
     contact = message.contact.phone_number
     print(contact)
     await state.update_data({
@@ -142,6 +150,12 @@ async def phone_input(message : types.Message, state : FSMContext):
     keyboard = types.ReplyKeyboardMarkup(keyboard=[[types.KeyboardButton(telefon_text[lang][0])],[types.KeyboardButton(telefon_text[lang][1])]], resize_keyboard=True)                        
     await message.answer(send_text, reply_markup=keyboard)
     await Personal.next()
+    # text = {
+    #     "uz" : "Ismingizni kiriting:",
+    #     "eng" : "Введите ваше имя:"
+    # }
+    # await message.answer(text[lang])
+    # await Personal.name.set()
 
 
 @dp.message_handler(lambda message : message.text is not None, state=Personal.phone)
@@ -167,12 +181,14 @@ async def resend_code(message : types.Message, state : FSMContext):
     phone_number = data.get("phone")
     text = "Kod jo'natildi. Akkauntni aktiv holga keltirish uchun kodni jo'nating."
     code = randint(100000, 999999)
+    print(code)
     await state.update_data({
         "code" : code,
         })
+    data = await state.get_data()
     sms_text = f"Sizning aktivatsiya kodingiz : {code}"
     print(sms_text)
-    sms = send_sms(sms_text[lang], phone_number)
+    sms = send_sms(sms_text, phone_number)
     
     # sms = client.messages \
     #                 .create(
@@ -195,7 +211,7 @@ async def resend_code(message : types.Message, state : FSMContext):
         })
     sms_text = f"Ваш код активации: {code}."
     print(sms_text)
-    sms = send_sms(sms_text[lang], phone_number)
+    sms = send_sms(sms_text, phone_number)
     
     # sms = client.messages \
     #                 .create(
@@ -234,7 +250,7 @@ async def code_input(message : types.Message, state : FSMContext):
     lang = "uz" if language == "🇺🇿O'zbekcha" else "eng"
     try:
 
-        isauthenticated = data.get('code') == int(message.text)
+        isauthenticated = int(data.get('code')) == int(message.text)
     except:
         isauthenticated = False    
     text = {

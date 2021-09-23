@@ -68,11 +68,12 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 
-customer = Customer(username="Murodbek", phone="+998727440", language="🇺🇿O'zbekcha", time="12:00 21.09.2021 da", comment="Bu shunchaki test", longitude="1212", latitude="2115")
-session.add(customer)
-session.commit()
+# customer = Customer(username="Murodbek", phone="+998727440", language="🇺🇿O'zbekcha", time="12:00 21.09.2021 da", comment="Bu shunchaki test", longitude="1212", latitude="2115")
+# customer = session.query(Customer).filter(Customer.customer_id == 644230165).first() # Customer(customer_id=759631, username="Murodbek", phone="+998938727265", language="🇺🇿O'zbekcha",) #    
+
+# session.delete(customer)
+# session.commit()
 # product = Product(title="Product title3", description="Product description3", price="322000", photo_id="photo_id3")
-# customer = session.query(Customer).filter(Customer.customer_id == 1914622728).first() # Customer(customer_id=759631, username="Murodbek", phone="+998938727265", language="🇺🇿O'zbekcha",) #    
 # customer.username = "Asadbek"
 
 # product =session.query(Product).filter(Product.title == "Контрактубекс® 20 г гель для лечения рубцов и шрамов").first()   # Product(title="Контрактубекс® 20 г", description="эффект. ....", price="100000",photo_id="some photo_id again") 
