@@ -19,7 +19,7 @@ back_menu_eng = ReplyKeyboardMarkup(
 edit_settings_menu_eng = ReplyKeyboardMarkup(
 	keyboard=[
 		[
-			KeyboardButton(text="Изменить ФИО"),
+			KeyboardButton(text="Изменить Имя"),
 			KeyboardButton(text="Изменить номер"),
 		],
 		[
