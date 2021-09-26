@@ -13,10 +13,6 @@ from utils.admin_messages import admin_send_message
 from data.config import ADMINS, OFFICE_LOCATION
 
 
-
-
-
-
 @dp.message_handler(lambda message : message.text in ["⬅️Назад", "⬅️Ortga"], state=Customer_Form.comment)
 async def back_from_comment(message : types.Message, state : FSMContext):
 	user_id = message.from_user.id
@@ -46,5 +42,9 @@ async def comment_input(message : types.Message, state : FSMContext):
 	# 	})
 	# ikki tilga to'g'rila
 	keyboard = tolov_uz if lang == "uz" else tolov_eng
-	await message.answer("To'lov turini tanlang!", reply_markup=keyboard) 
+	text = {
+		'uz': 'To\'lov turini tanlang!',
+		'eng': 'Выберите вариант оплаты',
+	}
+	await message.answer(text[lang], reply_markup=keyboard)
 	await Customer_Form.tolov_turi.set()

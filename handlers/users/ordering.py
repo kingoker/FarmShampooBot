@@ -13,7 +13,6 @@ from utils import admin_send_message
 from data.config import ADMINS, OFFICE_LOCATION
 
 
-
 @dp.message_handler(Text(equals="🚖Оформить заказ"), state=Customer_Form.product)
 async def order_place_eng(message : types.Message, state : FSMContext):
 	print("🚖Оформить заказ")
@@ -172,10 +171,11 @@ async def back_from_time(message : types.Message, state : FSMContext):
 
 @dp.callback_query_handler(state=Customer_Form.time)  
 async def inline_kb_answer_callback_handler(query: types.CallbackQuery, state : FSMContext):
-    
+
     user_id = query.from_user.id
     print(query.from_user.id)
     customer = session.query(Customer).filter(Customer.customer_id==user_id).first()
+    lang = "uz" if customer.language == "🇺🇿O'zbekcha" else "eng"
     keyboards = query.message.reply_markup.inline_keyboard
     k_hour_plus = keyboards[0][0]
     k_sec_plus = keyboards[0][1]
@@ -188,28 +188,30 @@ async def inline_kb_answer_callback_handler(query: types.CallbackQuery, state : 
     h = k_hour["text"]
     s = k_sec["text"]
     if query.data == "✅":
+        text = {
+			"uz": "✅ Tasdiqlandi",
+			"eng": "✅ Подтвердить",
+		}
         print("✅ Tasdiqlandi")
-        query.message.text = "✅ Tasdiqlandi"    
+        query.message.text = text[lang]
         customer.time = f"{h} : {s}"
         session.commit()
-        lang = "uz" if customer.language == "🇺🇿O'zbekcha" else "eng"
         text = {
-			"uz" : "📝 Buyurtmani qabul qilishda qo'shimcha izohingizni yozing:",
-			"eng" : "📝 Пожалуйста введите свои комментарии к заказу:",
+			"uz": "🕜 Siz tanlagan vaqtni yozib oldik\n\n📝 Buyurtmani qabul qilishda qo'shimcha izohingizni yozing:",
+			"eng": "🕜 Мы записали удобное для вас время\n\n📝Пожалуйста введите свои комментарии к заказу:",
         }
         k_text = {"uz" : "⬅️Ortga", "eng" : "⬅️Назад",}
         keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
         keyboard.add(*(KeyboardButton(k_text[lang]), ))
         await query.answer()
         await bot.delete_message(
-        	    query.from_user.id,
-                query.message.message_id,	
+			query.from_user.id,
+			query.message.message_id,
         	)
         await bot.send_message(
-							text=text[lang], 
-                            chat_id=query.from_user.id,
-                            reply_markup=keyboard,
-
+			text=text[lang],
+			chat_id=query.from_user.id,
+			reply_markup=keyboard,
         )
         await Customer_Form.comment.set()
         """ Returning from the function for stopping initializing it """
@@ -257,10 +259,9 @@ async def inline_kb_answer_callback_handler(query: types.CallbackQuery, state : 
         ('-', 's--'),
     
         )
-    lang = "uz"
     text_keyboard = {
-        "uz" : "✅ Tasdiqlash",
-        "eng" : "✅ Подтвердить"
+        "uz": "✅ Tasdiqlash",
+        "eng": "✅ Подтвердить"
     }
 
     # in real life for the callback_data the callback data factory should be used
@@ -281,10 +282,10 @@ async def inline_kb_answer_callback_handler(query: types.CallbackQuery, state : 
 
     print(query.message.message_id)
     await bot.edit_message_text(
-                            query.message.text, 
-                            query.from_user.id,
-                            query.message.message_id,
-                            reply_markup=keyboard_markup,
+		query.message.text,
+		query.from_user.id,
+		query.message.message_id,
+		reply_markup=keyboard_markup,
 )
     
 

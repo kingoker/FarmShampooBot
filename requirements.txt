@@ -1,5 +1,6 @@
 aiogram==2.14.3
 aiohttp==3.7.4.post0
+asgiref==3.4.1
 async-timeout==3.0.1
 attrs==21.2.0
 Babel==2.9.1
@@ -28,6 +29,7 @@ rfc3986==1.5.0
 six==1.16.0
 sniffio==1.2.0
 SQLAlchemy==1.4.23
+sqlparse==0.4.1
 telepot==12.7
 twilio==6.63.1
 typing-extensions==3.10.0.0

@@ -1,0 +1,14 @@
+[Unit]
+Description=Telegram BOt
+After=network.target
+
+[Service]
+User=farm
+Group=
+
+WorkingDirectory=/home/farm/FarmShampooBot/
+Environment="PYTHONPATH=/home/farm/FarmShampooBot/"
+ExecStart=/home/farm/FarmShampooBot/.venv/bin/python /home/farm/FarmShampooBot/app.py
+
+[Install]
+WantedBy=multi-user.target
