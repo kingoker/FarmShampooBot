@@ -4,11 +4,12 @@ from database.database import session, Customer, Product, Organization, savat
 from loader import dp
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from aiogram.dispatcher.filters import Text, Regexp
-from keyboards.default import amount_menu_uz, amount_menu_eng, products_menu_uz, products_menu_eng, menu_product_types_uz, menu_product_types_eng
+from keyboards.default import tolov_uz, tolov_eng, amount_menu_uz, amount_menu_eng, products_menu_uz, products_menu_eng, menu_product_types_uz, menu_product_types_eng
 from states.Customer_state import Customer_Form
 from aiogram.dispatcher import FSMContext
 from utils.misc.get_distance import calc_distance
 from utils.misc.show_gmap import show
+from utils import admin_send_message
 from data.config import ADMINS, OFFICE_LOCATION
 
 
@@ -84,34 +85,14 @@ async def comment_input(message : types.Message, state : FSMContext):
 	keyboard = menu_product_types_uz if lang == "uz" else menu_product_types_eng
 	await message.answer_location(latitude=OFFICE_LOCATION[0], longitude=OFFICE_LOCATION[1])
 	await message.answer(text[lang]["guide"], reply_markup=keyboard)
-	products = customer.products	
-	admin_text = f"🏃 <strong>Новый заказ</strong> – Самовывоз:\n"
-	total_price = 0
-	admin_text += f"<strong>Юзер</strong>:@{message.from_user.username}\n"
-	admin_text += f"<strong>Имя</strong>:{customer.username}\n"
-	admin_text += f"<strong>Номер телефона</strong>: {customer.phone}\n"
-	admin_text += f"<strong>Язык</strong>: {customer.language}\n"
-	i = 0
-	records = session.query(savat, Customer).filter(Customer.customer_id==customer.customer_id, savat.c.customer_id == customer.customer_id).all()
-	for row in records:
-		product = session.query(Product).filter(Product.product_id==row.product_id).first()
-		i +=1
-		admin_text += f"<strong>{i}. {product.title}</strong>\n\n"
-		total_price += int(row.amount) * int(product.price)
-		price = format(int(product.price),",d").replace(',', ' ')
-		amount_show = f"{int(row.amount) * int(product.price):,}".replace(',', ' ')
-		admin_text+= f"{row.amount} x {price} = {amount_show} UZS\n\n"
-	total_price = f"{total_price:,}".replace(',', ' ')
-	admin_text += f"<strong>Сумма оплаты: </strong> {total_price} UZS\n"
-	admin_text += f"<strong>Оплачено</strong>: ⛔\n"
-	admin_text += f"<strong>Комментарии</strong>:{customer.comment}"
-	for admin in ADMINS:
-		try:
-			await dp.bot.send_message(admin, admin_text)
-
-		except Exception as err:
-			logging.exception(err)
-
+	products = customer.products
+	data = await state.get_data()
+	tolov_turi = data.get("tolov_turi")
+	if tolov_turi:
+		await admin_send_message(message, customer, pickup=True, cash=True)
+	else:	
+		await admin_send_message(message, customer, pickup=True)
+	
 	customer.products.clear()
 	session.commit()
 

@@ -31,7 +31,6 @@ async def get_location(message : types.Message, state : FSMContext):
     customer.longitude = message.location.longitude
     session.commit()
     r = requests.get(f"https://nominatim.openstreetmap.org/reverse?lat={message.location.latitude}&lon={message.location.longitude}&format=json")
-    # res = json.loads(r)
     r = r.json()
 
     print(r["address"])
@@ -48,11 +47,41 @@ async def get_location(message : types.Message, state : FSMContext):
         "uz" : "Buyurtmani qabul qilish uchun qulay vaqtni va izohni yozing yozing:",
         "eng" : "Укажите удобное для вас время получения заказа и ваши комментарии:",
         }
-        k_text = {"uz" : "⬅️Ortga", "eng" : "⬅️Назад",}
-        keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-        keyboard.add(*(KeyboardButton(k_text[lang]),))
-        await message.answer(text[lang], reply_markup=keyboard)
-        await Customer_Form.delivery.set()
+        keyboard_markup = types.InlineKeyboardMarkup(row_width=2, resize_keyboard=True)
+
+        hour_plus = (
+            ('+', 'h++'),
+            ('+', 's++'),
+        
+        )
+        clock_values = (
+
+            ('12', '12'),
+            ('00', '00'),
+        
+            )
+        hour_minus = (
+            ('-', 'h--'),
+            ('-', 's--'),
+        
+            )
+        text_keyboard = {
+                "uz" : "✅ Tasdiqlash",
+                "eng" : "✅ Подтвердить"
+            }
+        row_btns1 = (types.InlineKeyboardButton(text, callback_data=data) for text, data in hour_plus)
+        row_btns2 = (types.InlineKeyboardButton(text, callback_data=data) for text, data in clock_values)
+        row_btns3 = (types.InlineKeyboardButton(text, callback_data=data) for text, data in hour_minus)
+        row_btns4 = (types.InlineKeyboardButton(text_keyboard[lang], callback_data="✅"), )
+
+
+        keyboard_markup.row(*(row_btns1))
+        keyboard_markup.row(*(row_btns2))
+        keyboard_markup.row(*(row_btns3))
+        keyboard_markup.row(*(row_btns4))
+
+        await message.answer(text[lang], reply_markup=keyboard_markup)
+        await Customer_Form.time.set()
 
 @dp.message_handler(lambda message:message.text=="⬅️Ortga", state=Customer_Form.location)
 async def back_uz(message : types.Message, state : FSMContext):

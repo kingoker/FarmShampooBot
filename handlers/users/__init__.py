@@ -13,3 +13,5 @@ from . import product_add_for_admins
 from . import product_delete_for_admins
 from . import ordering
 from . import r_phone
+from . import client_comment
+from . import picking_payment

@@ -4,3 +4,4 @@ from .product_menus import  products_menu_uz,  products_menu_eng
 from .language import menuStart
 from .phone import phone_uz, phone_eng
 from .menus import menu_product_types_eng, menu_product_types_uz
+from .tolov import tolov_uz, tolov_eng

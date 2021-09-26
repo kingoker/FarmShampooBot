@@ -26,6 +26,7 @@ class Customer(Base):
         "Product", secondary=savat, back_populates="customers"
     )
     time = Column(String, nullable=True)
+    yuborish_turi = Column(String, nullable=True)
     comment = Column(String, nullable=True)
     latitude = Column(String, nullable=True)
     longitude = Column(String, nullable=True)
