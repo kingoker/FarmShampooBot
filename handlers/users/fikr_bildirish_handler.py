@@ -24,7 +24,7 @@ async def order_handler(message: types.Message):
 @dp.message_handler(Text(equals="✍️Оставить отзыв", ignore_case=True))
 async def order_handler(message: types.Message):
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-    titles = ["Все понравилось ⭐️⭐️⭐️⭐️", "Нормально ⭐️⭐️⭐️⭐️", "Удовлетворительно ⭐️⭐️⭐️", "Не понравилось ⭐️⭐️", "Хочу пожаловатся ⭐️", "⬅️Назад"]
+    titles = ["Все понравилось ⭐️⭐️⭐️⭐️⭐️", "Нормально ⭐️⭐️⭐️⭐️", "Удовлетворительно ⭐️⭐️⭐️", "Не понравилось ⭐️⭐️", "Хочу пожаловатся ⭐️", "⬅️Назад"]
     keyboard = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
     keyboard.add(*(KeyboardButton(text) for text in titles))
     await message.answer(message.text, reply_markup=keyboard)
@@ -39,7 +39,7 @@ async def ortga(message : types.Message, state : FSMContext):
     await message.answer(message.text, reply_markup=keyboard)
     await state.reset_state()
 
-@dp.message_handler(lambda message : message.text in ["Все понравилось ⭐️⭐️⭐️⭐️", "Нормально ⭐️⭐️⭐️⭐️", "Удовлетворительно ⭐️⭐️⭐️", "Не понравилось ⭐️⭐️", "Хочу пожаловатся ⭐️", "Hammasi yoqadi ⭐️⭐️⭐️⭐️⭐️", "Yaxshi ⭐️⭐️⭐️⭐️", "Yoqmadi ⭐️⭐️⭐️", "Yomon ⭐️⭐️", "Juda yomon ⭐️"], state=Customer_Fikr.baho) 
+@dp.message_handler(lambda message : message.text in ["Все понравилось ⭐️⭐️⭐️⭐️⭐️", "Нормально ⭐️⭐️⭐️⭐️", "Удовлетворительно ⭐️⭐️⭐️", "Не понравилось ⭐️⭐️", "Хочу пожаловатся ⭐️", "Hammasi yoqadi ⭐️⭐️⭐️⭐️⭐️", "Yaxshi ⭐️⭐️⭐️⭐️", "Yoqmadi ⭐️⭐️⭐️", "Yomon ⭐️⭐️", "Juda yomon ⭐️"], state=Customer_Fikr.baho) 
 async def baho_qoyish(message : types.Message, state : FSMContext):
     await state.update_data({
         "baho" : message.text,
