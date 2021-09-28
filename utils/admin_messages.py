@@ -39,6 +39,8 @@ async def admin_send_message(message, customer, pickup=False, delivery=False, pa
 		admin_text += f"<strong>Cпособ оплаты</strong>: Наличные\n"
 	if not paid:
 		admin_text += f"<strong>Оплачено</strong>: ⛔\n"
+		if location:
+		admin_text += f"<strong>Адрес</strong>: {show(customer.latitude, customer.longitude)}\n" 
 	else:
 		admin_text += f"<strong>Оплачено</strong>: ✅\n"
 	if location:
