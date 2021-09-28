@@ -65,8 +65,8 @@ async def got_payment(message: types.Message):
     user_id = message.from_user.id
     customer = session.query(Customer).filter(Customer.customer_id == user_id).first()
     print(customer.products)
-    customer.products.clear()
     await admin_send_message(message=message, customer=customer, paid=True)
+    customer.products.clear()
     customer.latitude = None
     customer.longitude = None
     session.commit()    
