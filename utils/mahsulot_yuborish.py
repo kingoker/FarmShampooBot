@@ -21,12 +21,12 @@ async def mahsulot_yuborish(message, description, records, customer):
         product = session.query(Product).filter(Product.product_id==row.product_id).first()
         prices.append(types.LabeledPrice(label= f"{product.title}", amount=int(product.price)*int(row.amount)*100))
     text = {
-		"uz" : "⬅️Ortga",
-		"eng" : "⬅️Назад",
-	}
+    "uz" : "⬅️Ortga",
+    "eng" : "⬅️Назад",
+  }
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.add(*(KeyboardButton(text[lang]), ))
-    await message.answer("💴 Payme", reply_markup=keyboard)   	
+    await message.answer("💴 Payme", reply_markup=keyboard)     
     await bot.send_invoice(message.chat.id, title=f"{customer.username}'s products",
                        description=description,
                        provider_token=PAYMENTS_PROVIDER_TOKEN,
