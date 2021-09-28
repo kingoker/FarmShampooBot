@@ -161,5 +161,3 @@ async def got_payment(message: types.Message):
     text = {"uz":"Xaridingiz uchun rahmat.", "eng" : "Спасибо за покупку."}
     keyboard = menu_product_types_uz if lang == "uz" else menu_product_types_eng    
     await message.answer(text[lang],reply_markup=keyboard)
-
-handlers - > users -> payment.py ning ichiga
