@@ -9,7 +9,7 @@ from keyboards.default import amount_menu_uz, amount_menu_eng, products_menu_uz,
 from states.Customer_state import Customer_Form
 from aiogram.dispatcher import FSMContext
 from utils.misc.show_gmap import show
-from utils.admin_messages import admin_send_message
+from utils import admin_send_message
 from data.config import  PAYMENTS_PROVIDER_TOKEN, ADMINS
 
 
