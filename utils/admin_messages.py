@@ -1,4 +1,3 @@
-Asadbek Sindarov, [28 сент. 2021 г., 22:11:11]:
 from aiogram import types
 from aiogram.dispatcher.filters.builtin import CommandHelp, CommandStart
 from database.database import session, Customer, Product, Organization, savat
