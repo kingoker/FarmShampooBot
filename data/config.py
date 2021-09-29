@@ -5,7 +5,7 @@ env = Env()
 env.read_env()
 
 # .env fayl ichidan quyidagilarni o'qiymiz
-BOT_TOKEN = "2045379423:AAHQu_US3v4BFtaUSxZjbZSi8XSVHMasiGA" 
+BOT_TOKEN = "2045379423:AAF0SFhTxhIEM5pW_46BB1yUFQlraBmakys" 
 # BOT_TOKEN = "1936771362:AAHlnu9ACW27yVLcqhX52xxO3dpaD_W5mFI" # Bot toekn Test
 ADMINS = ['1600170280', '3513638', '1019865273', '99940983']
 # ADMINS = ['915850675']# adminlar ro'yxati Test
