@@ -30,8 +30,6 @@ six==1.16.0
 sniffio==1.2.0
 SQLAlchemy==1.4.23
 sqlparse==0.4.1
-telepot==12.7
-twilio==6.63.1
 typing-extensions==3.10.0.0
 urllib3==1.26.6
 yarl==1.6.3
