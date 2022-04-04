@@ -1,10 +1,9 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, create_engine, asc, desc, func, and_
+from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey, Table, create_engine, asc, desc, func, and_
 from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import select
 
 Base = declarative_base()
-
 
 
 savat = Table(
