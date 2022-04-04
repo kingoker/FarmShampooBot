@@ -10,7 +10,7 @@ Base = declarative_base()
 savat = Table(
     "savat",
     Base.metadata,
-    Column("customer_id", Integer, ForeignKey("customer.customer_id")),
+    Column("customer_id", BigInteger, ForeignKey("customer.customer_id")),
     Column("product_id", Integer, ForeignKey("product.product_id")),
     Column("amount", Integer),
 )
@@ -18,7 +18,7 @@ savat = Table(
 
 class Customer(Base):
     __tablename__ = "customer"
-    customer_id = Column(Integer, primary_key=True)
+    customer_id = Column(BigInteger, primary_key=True)
     username = Column(String)
     phone = Column(String)
     language = Column(String(250))
